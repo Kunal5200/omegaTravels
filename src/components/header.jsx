@@ -1,10 +1,135 @@
-import { Box } from "@mui/material";
-import React from "react";
+import { loginDetails } from "@/redux/reducers/userInfo";
+import {
+  Avatar,
+  Box,
+  Divider,
+  IconButton,
+  List,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+  Popover,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { jwtDecode } from "jwt-decode";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import avatar from "@/avatar/avatar_1.jpg";
+import Image from "next/image";
+import { Raleway, Roboto_Slab } from "next/font/google";
+import { profileRoutes } from "@/assesst/routes";
 
+const roboto = Raleway({
+  weight: "500",
+  subsets: ["latin"],
+});
 const Header = () => {
+  const user = useSelector((state) => state.UserDetails);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      const decode = jwtDecode(accessToken);
+      dispatch(loginDetails({ ...decode }));
+    }
+  }, []);
+  const [fixed, setFixed] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", () => setFixed(window.pageYOffset > 0));
+    }
+  }, []);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const showPopover = (e) => {
+    setAnchorEl(e.currentTarget);
+  };
   return (
     <div>
-      <Box sx={{ position: "absolute", top: 0, left: 250 }}>Header</Box>
+      <Box
+        sx={{
+          position: "fixed",
+          top: 0,
+          width: "84%",
+          left: 200,
+          p: 1,
+          boxShadow: "0px 0px 1px 1px #eee",
+          background: fixed ? "#00000029" : "#ffffff",
+          backdropFilter: "blur(5px)",
+          transition: "0.5s ease-in-out",
+          zIndex: 99,
+        }}
+      >
+        <Stack
+          direction="row"
+          alignItems={"center"}
+          justifyContent={"flex-end"}
+        >
+          <IconButton onClick={showPopover}>
+            <Image
+              src={avatar}
+              width={30}
+              height={30}
+              style={{ borderRadius: "50%" }}
+            />
+          </IconButton>
+        </Stack>
+      </Box>
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        onClose={() => setAnchorEl(null)}
+        sx={{
+          "& .MuiPopover-paper": {
+            boxShadow: "none",
+            background: "#ffffff",
+            width: 250,
+            border: "1px solid #eee",
+            backdropFilter: "blur(5px)",
+          },
+        }}
+      >
+        <Stack direction={"row"} spacing={1} p={1}>
+          <IconButton>
+            <Image
+              src={avatar}
+              width={25}
+              height={25}
+              style={{ borderRadius: "50%" }}
+            />
+          </IconButton>
+          <Box>
+            <Typography
+              fontSize={13}
+              className={roboto.className}
+              textTransform={"capitalize"}
+            >
+              {user.name} {`(${user.type})`}
+            </Typography>
+            <Typography
+              fontSize={12}
+              className={roboto.className}
+              textTransform={"capitalize"}
+            >
+              {user.email}
+            </Typography>
+          </Box>
+        </Stack>
+        <Divider sx={{ borderStyle: "dashed" }} />
+        <List>
+          {profileRoutes.map((val, i) => (
+            <ListItemButton key={i}>
+              <ListItemAvatar>{val.icon}</ListItemAvatar>
+              <ListItemText
+                primary={<Typography fontSize={12}>{val.name}</Typography>}
+              />
+            </ListItemButton>
+          ))}
+        </List>
+      </Popover>
     </div>
   );
 };

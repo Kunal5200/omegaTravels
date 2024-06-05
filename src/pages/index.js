@@ -1,4 +1,6 @@
+import { authControllers } from "@/api/auth";
 import loginBg from "@/banner/login-bg.svg";
+import { loginDetails } from "@/redux/reducers/userInfo";
 import { isEmail } from "@/utils/regex";
 import { loginValidation } from "@/utils/validation";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -14,12 +16,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { jwtDecode } from "jwt-decode";
 import { Raleway, Roboto_Condensed } from "next/font/google";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
-
+import Loading from "react-loading";
+import { useDispatch } from "react-redux";
 const raleway = Raleway({
   weight: "500",
   subsets: ["latin"],
@@ -33,6 +37,8 @@ export default function Home() {
   const showPasswordHandler = () => {
     setShowPassword(!showPassword);
   };
+
+  const dispatch = useDispatch();
 
   const [state, setState] = useState({
     email: "",
@@ -59,14 +65,43 @@ export default function Home() {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
   const [validation, setValidation] = useState(false);
+  const [loading, setLoading] = useState(false);
   const submitHandler = (e) => {
     e.preventDefault();
     if (loginValidation({ value: state, setError, error, setValidation })) {
-      setOpen(true);
-      router.push("/dashboard");
+      setLoading(true);
+      let body = {
+        email: state.email,
+        password: state.password,
+      };
+      authControllers
+        .loginUser(body)
+        .then((res) => {
+          // console.log(res);
+          const decoded = jwtDecode(res.data.data.accessToken);
+          dispatch(loginDetails({ ...decoded }));
+          
+          setLoading(false);
+          setOpen(true);
+          setMessage(res.data.message);
+          localStorage.setItem("accessToken", res.data.data.accessToken);
+          router.push("/dashboard");
+        })
+        .catch((err) => {
+          let errMessage =
+            (err.response && err.response.data.message) ||
+            err.message ||
+            "Something Went Wrong";
+          setOpen(true);
+          setValidation(false);
+          setMessage(errMessage);
+          setLoading(false);
+        });
     } else {
       setOpen(true);
+      setMessage("Please Enter Valid Details");
     }
   };
 
@@ -189,8 +224,18 @@ export default function Home() {
                     }}
                     type="submit"
                     className={raleway.className}
+                    disabled={loading}
                   >
-                    SignIn
+                    {loading ? (
+                      <Loading
+                        type="bars"
+                        color="#ffffff"
+                        width={20}
+                        height={20}
+                      />
+                    ) : (
+                      "SignIn"
+                    )}
                   </Button>
                 </Box>
                 <Snackbar
@@ -204,9 +249,7 @@ export default function Home() {
                     onClose={() => setOpen(false)}
                     variant="filled"
                   >
-                    {validation
-                      ? "Login SuccessFully"
-                      : "Please Enter Valid Details"}
+                    {message}
                   </Alert>
                 </Snackbar>
               </FormControl>
