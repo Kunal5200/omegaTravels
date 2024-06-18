@@ -144,10 +144,11 @@ const UserManagement = () => {
   const handleAddUser = () => {
     router.push("/add-user");
   };
+
   return (
     <div className="main-wrapper">
       {loading ? (
-        <div className="main-wrapper"> 
+        <div className="main-wrapper">
           <BackdropFilter open={loading} setOpen={setLoading} />
         </div>
       ) : (
