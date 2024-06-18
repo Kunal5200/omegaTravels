@@ -1,6 +1,6 @@
 export const Status = {
   ACTIVE: "Active",
-  INACTIVE: "InActive",
+  INACTIVE: "Inactive",
 };
 
 export const userRoles = {

@@ -19,14 +19,18 @@ import avatar from "@/avatar/avatar_1.jpg";
 import Image from "next/image";
 import { Raleway, Roboto_Slab } from "next/font/google";
 import { profileRoutes } from "@/assesst/routes";
+import { useRouter } from "next/router";
 
 const roboto = Raleway({
   weight: "500",
   subsets: ["latin"],
 });
 const Header = () => {
+  const router = useRouter();
   const user = useSelector((state) => state.UserDetails);
-
+  const handleRoute = (path) => {
+    router.push(path);
+  };
   const dispatch = useDispatch();
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -52,7 +56,7 @@ const Header = () => {
         sx={{
           position: "fixed",
           top: 0,
-          width: "84%",
+          width: "86%",
           left: 200,
           p: 1,
           boxShadow: "0px 0px 1px 1px #eee",
@@ -121,7 +125,7 @@ const Header = () => {
         <Divider sx={{ borderStyle: "dashed" }} />
         <List>
           {profileRoutes.map((val, i) => (
-            <ListItemButton key={i}>
+            <ListItemButton key={i} onClick={() => handleRoute(val.url)}>
               <ListItemAvatar>{val.icon}</ListItemAvatar>
               <ListItemText
                 primary={<Typography fontSize={12}>{val.name}</Typography>}

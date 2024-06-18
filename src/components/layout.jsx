@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./sidebar";
 import { useRouter } from "next/router";
 import Header from "./header";
+import Modal from "./modal";
 
 const Layout = ({ children }) => {
   const router = useRouter();
@@ -15,6 +16,8 @@ const Layout = ({ children }) => {
   }, [router.pathname]);
   return (
     <div>
+
+      {/* <Modal /> */}
       {show && <Header />}
       {show && <Sidebar />}
       {children}

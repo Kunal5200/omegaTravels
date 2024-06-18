@@ -1,7 +1,12 @@
 import { authControllers } from "@/api/auth";
+import BackdropFilter from "@/components/backdrop";
 import { Status, userRoles } from "@/utils/enum";
 import { isEmail } from "@/utils/regex";
-import { addUserValidation, generatePassword } from "@/utils/validation";
+import {
+  addUserValidation,
+  editUserValidation,
+  generatePassword,
+} from "@/utils/validation";
 import {
   AddAPhoto,
   NavigateNext,
@@ -51,6 +56,7 @@ const checkedIcon = <CheckBox fontSize="small" />;
 
 const AddUser = () => {
   const router = useRouter();
+
   const fileRef = useRef();
   const [imagePreview, setImagePreview] = useState(null);
   const [data, setData] = useState([]);
@@ -59,26 +65,21 @@ const AddUser = () => {
   const [state, setState] = useState({
     first_name: "",
     last_name: "",
-    // username: "",
     email: "",
     phone_number: "",
     business_ids: [],
     status: "",
-    // gender: "",
-    password: "",
     access_module: [],
     img: null,
+    _id: "",
   });
   const [error, setError] = useState({
     first_name: "",
     last_name: "",
-    // username: "",
     email: "",
     phone_number: "",
     business_ids: "",
     status: "",
-    // gender: "",
-    password: "",
     access_module: "",
     img: null,
   });
@@ -87,15 +88,24 @@ const AddUser = () => {
   const gender = [{ label: "male" }, { label: "female" }];
 
   const roles = [{ label: userRoles.ADMIN }, { label: userRoles.AGENT }];
+  const [dataLoading, setDataLoading] = useState(true);
 
   const getMerchantsList = () => {
     authControllers
       .getMerchants()
       .then((res) => {
         setData(res.data.message);
+        setDataLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        let errMessage =
+          (err.response && err.response.data.message) || err.message;
+        setOpenSnackBar({
+          ...openSnackbar,
+          open: true,
+          message: errMessage,
+          variant: "error",
+        });
       });
   };
 
@@ -129,6 +139,7 @@ const AddUser = () => {
 
   const merchantHandler = (e, newValue) => {
     setSelectedMerchant(newValue);
+    // console.log("ttt", newValue);
     if (newValue) {
       const merchantIds = newValue.map((merchant) => merchant._id);
       setState({ ...state, business_ids: merchantIds });
@@ -187,28 +198,6 @@ const AddUser = () => {
     variant: "",
   });
 
-  const copyPassword = () => {
-    if (state.password) {
-      navigator.clipboard
-        .writeText(state.password)
-        .then(() => {
-          setOpenSnackBar({
-            ...openSnackbar,
-            open: true,
-            variant: "success",
-            message: "Password Copied Successfully",
-          });
-        })
-        .catch((err) => {
-          console.error("Failed to copy password: ", err);
-        });
-    }
-  };
-
-  const autoGeneratePassword = () => {
-    setState({ ...state, password: generatePassword() });
-  };
-
   useEffect(() => {
     getMerchantsList();
   }, []);
@@ -217,65 +206,75 @@ const AddUser = () => {
     setOpenSnackBar({ ...openSnackbar, open: false });
   };
   const [loading, setLoading] = useState(false);
-  const addUserSubmitHandler = (e) => {
+  const addUserSubmitHandler = async (e) => {
     e.preventDefault();
-    if (addUserValidation({ state, setError, error })) {
+    if (editUserValidation({ state, setError, error })) {
+      let profileUrl = state.img;
       setLoading(true);
-      let formData = new FormData();
+      if (typeof state.img !== "string") {
+        let formData = new FormData();
+        formData.append("file", state.img);
+        formData.append("location_type", "user");
 
-      formData.append("file", state.img);
-      formData.append("location_type", "user");
-      authControllers
-        .uploadImage(formData)
-        .then((res) => {
-          let body = {
-            first_name: state.first_name,
-            last_name: state.last_name,
-            profile: res.data.data,
-            email: state.email,
-            phone_number: state.phone_number,
-            merchants_ids: state.business_ids,
-            status: state.status,
-            userType: "master",
-            password: state.password,
-            access_module: state.access_module,
-          };
-          authControllers
-            .addUser(body)
-            .then((res) => {
-              setOpenSnackBar({
-                ...openSnackbar,
-                open: true,
-                message: res.data.message,
-                variant: "success",
-              });
-              setLoading(false);
-              router.push("/user-management");
-            })
-            .catch((err) => {
-              let errMessage =
-                (err.response && err.response.data.message) || err.message;
-
-              setOpenSnackBar({
-                ...openSnackbar,
-                open: true,
-                message: errMessage,
-                variant: "error",
-              });
-              setLoading(false);
-            });
-        })
-        .catch((err) => {
+        try {
+          const uploadResponse = await authControllers.uploadImage(formData);
+          profileUrl = uploadResponse.data.data;
+        } catch (err) {
           let errMessage =
             (err.response && err.response.data.message) || err.message;
-
           setOpenSnackBar({
             ...openSnackbar,
             open: true,
             message: errMessage,
             variant: "error",
           });
+          return;
+        }
+      }
+
+      let body = {
+        first_name: state.first_name,
+        last_name: state.last_name,
+        profile: profileUrl,
+        email: state.email,
+        phone_number: state.phone_number,
+        merchants_ids: state.business_ids,
+        status: state.status,
+        userType: "master",
+        access_module: state.access_module,
+      };
+
+      try {
+        const editResponse = await authControllers.editUser({
+          id: state._id,
+          data: body,
         });
+        setOpenSnackBar({
+          ...openSnackbar,
+          open: true,
+          message: editResponse.data.message,
+          variant: "success",
+        });
+        router.push("/user-management");
+        setLoading(false);
+      } catch (err) {
+        let errMessage =
+          (err.response && err.response.data.message) || err.message;
+        setOpenSnackBar({
+          ...openSnackbar,
+          open: true,
+          message: errMessage,
+          variant: "error",
+        });
+        setLoading(false);
+      }
+    } else {
+      setOpenSnackBar({
+        ...openSnackbar,
+        open: true,
+        message: "Please Enter All Information",
+        variant: "error",
+      });
     }
   };
 
@@ -283,18 +282,68 @@ const AddUser = () => {
     router.push(path);
   };
 
+  useEffect(() => {
+    const fetchData = () => {
+      const userId = router.query.userId;
+      if (userId) {
+        authControllers
+          .getUserInfo(userId)
+          .then((res) => {
+            const response = res.data.data;
+            setState({
+              ...state,
+              first_name: response.first_name,
+              last_name: response.last_name,
+              phone_number: response.phone_number,
+              email: response.email,
+              status: response.status,
+              access_module: response.access_module,
+              business_ids: response.merchants_ids,
+              img: response.profile,
+              _id: response._id,
+            });
+            setPhone(`+${response.phone_number}`);
+            setSelectedStatus(response.status ? "Active" : "InActive");
+            setModules(
+              response.access_module.map((option) => ({ label: option }))
+            );
+            const matchedMerchants = response.merchants_ids
+              .map((merchantId) => {
+                return data.find((merchant) => merchant._id === merchantId);
+              })
+              .filter(Boolean);
+            setSelectedMerchant(matchedMerchants);
+            setImagePreview(response.profile);
+            setDataLoading(false);
+          })
+          .catch((err) => {
+            let errMessage =
+              (err.response && err.response.data.message) || err.message;
+            setOpenSnackBar({
+              ...openSnackbar,
+              open: true,
+              message: errMessage,
+              variant: "error",
+            });
+          });
+      }
+    };
+    fetchData();
+  }, [router.query.userId, data]);
+
   return (
     <div className="main-wrapper">
       <Head>
-        <title>Add New User</title>
+        <title>Edit User</title>
       </Head>
+      <BackdropFilter open={dataLoading}  />
       <Box sx={{ p: 1 }}>
         <Typography
           className={roboto.className}
           fontSize={20}
           sx={{ fontWeight: "600 !important" }}
         >
-          Add User
+          Edit User
         </Typography>
         <Breadcrumbs
           separator={<NavigateNext fontSize="small" />}
@@ -309,7 +358,7 @@ const AddUser = () => {
             User Management
           </Typography>
           <Typography fontSize={12} className={roboto_slab_normal.className}>
-            Add New User
+            Edit User
           </Typography>
         </Breadcrumbs>
         <form onSubmit={addUserSubmitHandler}>
@@ -394,7 +443,7 @@ const AddUser = () => {
               </Card>
             </Grid>
             <Grid item lg={8}>
-              <Card sx={{ p: 2, height: "100%" }}>
+              <Card sx={{ p: 3, height: "100%" }}>
                 <Grid container spacing={2}>
                   <Grid item lg={6}>
                     <TextField
@@ -412,6 +461,7 @@ const AddUser = () => {
                       onChange={inputHandler}
                       error={Boolean(error.first_name)}
                       helperText={error.first_name}
+                      value={state.first_name}
                     />
                   </Grid>
                   <Grid item lg={6}>
@@ -430,28 +480,12 @@ const AddUser = () => {
                       onChange={inputHandler}
                       error={Boolean(error.last_name)}
                       helperText={error.last_name}
+                      value={state.last_name}
                     />
                   </Grid>
                 </Grid>
                 <Grid container spacing={2} mt={1}>
                   <Grid item lg={6}>
-                    {/* <TextField
-                      label="Username"
-                      sx={{
-                        ".MuiOutlinedInput-input": {
-                          padding: "12px",
-                        },
-                        "& label": {
-                          fontSize: 12,
-                        },
-                      }}
-                      fullWidth
-                      id="username"
-                      onChange={inputHandler}
-                      error={Boolean(error.username)}
-                      helperText={error.username}
-                    /> */}
-
                     <MuiTelInput
                       label="Phone Number"
                       defaultCountry="IN"
@@ -486,6 +520,7 @@ const AddUser = () => {
                       onChange={inputHandler}
                       error={Boolean(error.email)}
                       helperText={error.email}
+                      value={state.email}
                     />
                   </Grid>
                 </Grid>
@@ -585,86 +620,7 @@ const AddUser = () => {
                     />
                   </Grid>
                 </Grid>
-                {/* <Grid container spacing={2} mt={1}>
-                  <Grid item lg={6}>
-                    <Autocomplete
-                      onChange={statusHandler}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Status"
-                          sx={{
-                            ".MuiOutlinedInput-input": {
-                              padding: "12px",
-                              font: 12,
-                            },
-                            "& label": {
-                              fontSize: 12,
-                            },
-                          }}
-                          error={Boolean(error.status)}
-                          helperText={error.status}
-                        />
-                      )}
-                      value={selectedStatus}
-                      options={userStatus}
-                      renderOption={(props, option) => (
-                        <Box
-                          component={"li"}
-                          {...props}
-                          fontSize={12}
-                          fontFamily={roboto_slab_normal.style}
-                        >
-                          {option.label}
-                        </Box>
-                      )}
-                      sx={{
-                        "&.MuiAutocomplete-root .MuiOutlinedInput-root": {
-                          padding: "5px",
-                        },
-                      }}
-                    />
-                  </Grid>
-                  <Grid item lg={6}>
-                    <Autocomplete
-                      onChange={genderHandler}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Gender"
-                          sx={{
-                            ".MuiOutlinedInput-input": {
-                              padding: "12px",
-                              font: 12,
-                            },
-                            "& label": {
-                              fontSize: 12,
-                            },
-                          }}
-                          error={Boolean(error.gender)}
-                          helperText={error.gender}
-                        />
-                      )}
-                      value={selectedGender}
-                      options={gender}
-                      renderOption={(props, option) => (
-                        <Box
-                          component={"li"}
-                          {...props}
-                          fontSize={12}
-                          fontFamily={roboto_slab_normal.style}
-                        >
-                          {option.label}
-                        </Box>
-                      )}
-                      sx={{
-                        "&.MuiAutocomplete-root .MuiOutlinedInput-root": {
-                          padding: "5px",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid> */}
+
                 <Grid container mt={1} spacing={2}>
                   <Grid item lg={12}>
                     <Autocomplete
@@ -722,62 +678,7 @@ const AddUser = () => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container spacing={2} mt={1}>
-                  <Grid item lg={6}>
-                    <TextField
-                      label="Password"
-                      sx={{
-                        ".MuiOutlinedInput-input": {
-                          padding: "12px",
-                        },
-                        "& label": {
-                          fontSize: 12,
-                        },
-                      }}
-                      value={state.password}
-                      fullWidth
-                      type={showPassword ? "text" : "password"}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment>
-                            <IconButton onClick={passwordShowHandler}>
-                              {!showPassword ? (
-                                <VisibilityOutlined />
-                              ) : (
-                                <VisibilityOffOutlined />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                      id="password"
-                      onChange={inputHandler}
-                      error={Boolean(error.password)}
-                      helperText={error.password}
-                    />
-                  </Grid>
-                  <Grid item lg={6}>
-                    <Stack direction={"row"} alignItems={"center"} spacing={1}>
-                      <Button
-                        sx={{
-                          border: "1px solid #d7d7d7",
-                          fontSize: 12,
-                          p: 1.4,
-                          textTransform: "capitalize",
-                          color: "#000",
-                        }}
-                        onClick={autoGeneratePassword}
-                      >
-                        Auto Generate
-                      </Button>
-                      {state.password && (
-                        <IconButton onClick={copyPassword}>
-                          <CopyAll />
-                        </IconButton>
-                      )}
-                    </Stack>
-                  </Grid>
-                </Grid>
+
                 <Box textAlign={"end"}>
                   <Button
                     sx={{
@@ -804,7 +705,7 @@ const AddUser = () => {
                         color="#fff"
                       />
                     ) : (
-                      "Add User"
+                      "Edit User"
                     )}
                   </Button>
                 </Box>

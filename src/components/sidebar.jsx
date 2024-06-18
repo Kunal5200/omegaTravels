@@ -31,9 +31,9 @@ const Sidebar = () => {
       >
         <Box
           sx={{
-            p: 1,
+            p: 2,
             textAlign: "center",
-            height: 45,
+            height: 62,
             borderBottom: "1px solid #eee",
           }}
         >
