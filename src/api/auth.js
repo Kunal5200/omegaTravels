@@ -98,6 +98,24 @@ export const authControllers = {
       throw error;
     }
   },
+  addBusiness: async (body) => {
+    try {
+      let result = await securedApi.securedApi.post("/business", body);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getBusiness: async () => {
+    try {
+      let result = await securedApi.securedApi.get(
+        "/business?pageNo=1&limit=10&query=undefined"
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
   addUser: async (data) => {
     try {
       let result = await securedApi.securedApi.post(

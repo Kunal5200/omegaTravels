@@ -236,6 +236,7 @@ const UserManagement = () => {
   const handleAddUser = () => {
     router.push("/add-user");
   };
+
   return (
     <div className="main-wrapper">
       {/* {loading ? (
