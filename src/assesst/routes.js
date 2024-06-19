@@ -4,6 +4,7 @@ import {
   LogoutOutlined,
   Person2Outlined,
   PersonOutline,
+  Settings,
   SettingsOutlined,
   StorefrontOutlined,
 } from "@mui/icons-material";
@@ -13,6 +14,11 @@ export const profileRoutes = [
     name: "Profile",
     url: "/profile",
     icon: <PersonOutline fontSize="small" />,
+  },
+  {
+    name: "Settings",
+    url: "/settings",
+    icon: <Settings fontSize="small" />,
   },
   {
     name: "Logout",
