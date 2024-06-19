@@ -29,7 +29,7 @@ export const routes = [
   },
   {
     name: "Business",
-    url: "/business",
+    url: "/omegabusiness/business",
     icon: <BusinessOutlined fontSize="small" />,
   },
   {

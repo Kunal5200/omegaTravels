@@ -82,7 +82,7 @@ export default function Home() {
           // console.log(res);
           const decoded = jwtDecode(res.data.data.accessToken);
           dispatch(loginDetails({ ...decoded }));
-          
+
           setLoading(false);
           setOpen(true);
           setMessage(res.data.message);

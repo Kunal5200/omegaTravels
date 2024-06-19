@@ -1,23 +1,16 @@
+import { NavigateNext } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
   Breadcrumbs,
-  Button,
   FormLabel,
   Grid,
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
 import { Roboto_Slab } from "next/font/google";
-import {
-  AddAPhoto,
-  NavigateNext,
-  Delete,
-  VisibilityOutlined,
-  VisibilityOffOutlined,
-} from "@mui/icons-material";
 import { useRouter } from "next/router";
+import { useState } from "react";
 const roboto = Roboto_Slab({
   weight: "500",
   subsets: ["latin"],
@@ -188,7 +181,7 @@ const AddMerchant = () => {
                     color: "#000",
                   }}
                 >
-                  Currencies
+                  Currency
                 </FormLabel>
                 <Autocomplete
                   disablePortal
