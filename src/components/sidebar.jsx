@@ -9,7 +9,8 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import React from "react";
-import logo from "@/logo/logo.png";
+// import logo from "@/logo/logo.png";
+import logo from "@/logo/EUVandeLogoBlack.svg";
 import { routes } from "@/assesst/routes";
 import { useRouter } from "next/router";
 const Sidebar = () => {

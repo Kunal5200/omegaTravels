@@ -1,3 +1,4 @@
+import { authControllers } from "@/api/auth";
 import { UserSettingControllers } from "@/api/usersetting";
 import { Status } from "@/utils/enum";
 import { CloudUpload } from "@mui/icons-material";
@@ -52,33 +53,53 @@ const status = [
 ];
 
 const subModules = [
-  { name: "CGMR" },
-  { name: "Payment processor" },
-  { name: "Kunal" },
+  { sub_module_name: "CGMR" },
+  { sub_module_name: "Payment processor" },
+  { sub_module_name: "Kunal" },
 ];
 
 const AddModules = () => {
   const [moduleData, setModuleData] = useState([]);
+  const [value, setValue] = useState(null);
+  const [subModuleValue, setSubModuleValue] = useState(null);
   const [state, setState] = useState({
     module_name: "",
     sub_module_name: "",
     slug: "",
     module_icon: null,
     status: "",
+    name: "",
   });
 
   const moduleHandler = (e, newValue) => {
+    // console.log(newValue);
+
     if (typeof newValue === "string") {
       setValue({ module_name: newValue });
-      setState({ ...state, module_name: newValue.inputValue });
+      setState({ ...state, name: newValue.inputValue });
     } else if (newValue && newValue.inputValue) {
       setValue({ module_name: newValue.inputValue });
-      setState({ ...state, module_name: newValue.inputValue });
+      setState({ ...state, name: newValue.inputValue });
+    } else if (newValue) {
+      setValue(newValue);
+      setState({ ...state, module_name: newValue._id });
     } else {
       setValue(newValue);
-      setState({ ...state, module_name: newValue.inputValue });
     }
     setSubModuleValue(null);
+  };
+
+  const subModuleHandler = (e, newValue) => {
+    if (typeof newValue === "string") {
+      setSubModuleValue({ sub_module_name: newValue });
+
+      setState({ ...state, sub_module_name: newValue.inputValue });
+    } else if (newValue && newValue.inputValue) {
+      setSubModuleValue({ sub_module_name: newValue.inputValue });
+      setState({ ...state, sub_module_name: newValue.inputValue });
+    } else {
+      setSubModuleValue(newValue);
+    }
   };
 
   const slugHandler = (e) => {
@@ -90,8 +111,6 @@ const AddModules = () => {
     setState({ ...state, status: newValue.value });
   };
   const [imagePreview, setImagePreview] = useState(null);
-  const [value, setValue] = useState(null);
-  const [subModuleValue, setSubModuleValue] = useState(null);
 
   const fileHandler = (e) => {
     const file = e.target.files[0];
@@ -124,6 +143,32 @@ const AddModules = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+
+    const fd = new FormData();
+    fd.append("file", state.module_icon);
+    fd.append("location_type", "module_icon");
+    authControllers
+      .uploadImage(fd)
+      .then((res) => {
+        const body = {
+          module_name: state.module_name,
+          sub_module_name: state.sub_module_name,
+          slug: state.slug,
+          status: state.status,
+          module_icon: res.data.data,
+          name: state.name,
+        };
+        UserSettingControllers.addModules(body)
+          .then((response) => {
+            console.log("response", response);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <div>
@@ -163,14 +208,14 @@ const AddModules = () => {
                   return option;
                 }
                 if (option.inputValue) {
-                  return option.module_name;
+                  return option.name;
                 }
-                return option.module_name;
+                return option.name;
               }}
               renderOption={(props, option) => (
                 <Box component={"li"} {...props}>
                   <Typography textTransform={"capitalize"} fontSize={12}>
-                    {option.module_name}
+                    {option.name}
                   </Typography>
                 </Box>
               )}
@@ -194,15 +239,7 @@ const AddModules = () => {
               <Autocomplete
                 value={subModuleValue}
                 size="medium"
-                onChange={(event, newValue) => {
-                  if (typeof newValue === "string") {
-                    setSubModuleValue({ name: newValue });
-                  } else if (newValue && newValue.inputValue) {
-                    setSubModuleValue({ name: newValue.inputValue });
-                  } else {
-                    setSubModuleValue(newValue);
-                  }
-                }}
+                onChange={subModuleHandler}
                 filterOptions={(options, params) => {
                   const filtered = filter(options, params);
                   const { inputValue } = params;
@@ -212,8 +249,8 @@ const AddModules = () => {
                   if (inputValue !== "" && !isExisting) {
                     filtered.push({
                       inputValue,
-                      name: inputValue,
-                      name: `Add "${inputValue}"`,
+                      sub_module_name: inputValue,
+                      sub_module_name: `Add "${inputValue}"`,
                     });
                   }
                   return filtered;
@@ -228,12 +265,12 @@ const AddModules = () => {
                     return option;
                   }
                   if (option.inputValue) {
-                    return option.title;
+                    return option.sub_module_name;
                   }
-                  return option.name;
+                  return option.sub_module_name;
                 }}
                 renderOption={(props, option) => (
-                  <li {...props}>{option.name}</li>
+                  <li {...props}>{option.sub_module_name}</li>
                 )}
                 freeSolo
                 renderInput={(params) => (
@@ -316,7 +353,16 @@ const AddModules = () => {
             </Stack>
           </Stack>
           <Button
-            sx={{ backgroundColor: "#000", color: "#fff", fontSize: 12, mt: 2 }}
+            sx={{
+              backgroundColor: "#000",
+              color: "#fff",
+              fontSize: 12,
+              mt: 2,
+              ":hover": {
+                backgroundColor: "#000",
+                color: "#fff",
+              },
+            }}
             type="submit"
             fullWidth
           >
