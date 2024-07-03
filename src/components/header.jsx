@@ -22,7 +22,11 @@ import { profileRoutes } from "@/assesst/routes";
 import { useRouter } from "next/router";
 
 const roboto = Raleway({
-  weight: "500",
+  weight: "600",
+  subsets: ["latin"],
+});
+const roboto_slab = Roboto_Slab({
+  weight: "600",
   subsets: ["latin"],
 });
 const Header = () => {
@@ -30,6 +34,7 @@ const Header = () => {
   const user = useSelector((state) => state.UserDetails);
   const handleRoute = (path) => {
     router.push(path);
+    setAnchorEl(null)
   };
   const dispatch = useDispatch();
   useEffect(() => {
@@ -89,7 +94,7 @@ const Header = () => {
         sx={{
           "& .MuiPopover-paper": {
             boxShadow: "none",
-            background: "#ffffff",
+            background: "#ffffff29",
             width: 250,
             border: "1px solid #eee",
             backdropFilter: "blur(5px)",
@@ -122,13 +127,17 @@ const Header = () => {
             </Typography>
           </Box>
         </Stack>
-        <Divider sx={{ borderStyle: "dashed" }} />
+        <Divider sx={{ borderStyle: "dashed", borderColor: "#000" }} />
         <List>
           {profileRoutes.map((val, i) => (
             <ListItemButton key={i} onClick={() => handleRoute(val.url)}>
               <ListItemAvatar>{val.icon}</ListItemAvatar>
               <ListItemText
-                primary={<Typography fontSize={12}>{val.name}</Typography>}
+                primary={
+                  <Typography fontSize={12} fontFamily={roboto_slab.style}>
+                    {val.name}
+                  </Typography>
+                }
               />
             </ListItemButton>
           ))}

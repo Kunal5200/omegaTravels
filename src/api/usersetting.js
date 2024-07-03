@@ -18,4 +18,14 @@ export const UserSettingControllers = {
       throw error;
     }
   },
+  getSubmodules: async (data) => {
+    try {
+      let result = await securedApi.securedApi.get(
+        `modules/submodules/${data}`
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
