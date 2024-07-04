@@ -40,7 +40,7 @@ export const routes = [
   },
   {
     name: "Merchants",
-    url: "/merchants",
+    url: "/omegaMerchant/merchants",
     icon: <StorefrontOutlined fontSize="small" />,
   },
 

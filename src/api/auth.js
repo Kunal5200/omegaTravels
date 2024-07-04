@@ -180,4 +180,15 @@ export const authControllers = {
       throw error;
     }
   },
+  addnotes: async (body, id) => {
+    try {
+      let result = await securedApi.securedApi.put(
+        `/business/note/${id}`,
+        body
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

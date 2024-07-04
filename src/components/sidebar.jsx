@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import React from "react";
 import logo from "@/logo/logo.png";
+
 import { routes } from "@/assesst/routes";
 import { useRouter } from "next/router";
 const Sidebar = () => {
@@ -37,7 +38,7 @@ const Sidebar = () => {
             borderBottom: "1px solid #eee",
           }}
         >
-          <Image src={logo} width={100} />
+          {/* <Image src={logo} width={100} /> */}
         </Box>
         <Box sx={{ mt: 2, p: 1 }}>
           <List>

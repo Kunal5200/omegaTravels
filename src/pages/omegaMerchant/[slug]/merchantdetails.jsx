@@ -36,8 +36,7 @@ const roboto_normal = Roboto_Slab({
   weight: "400",
   subsets: ["latin"],
 });
-
-const Businessdetails = () => {
+const Merchantdetails = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [businessData, setBusinessData] = useState(null);
@@ -98,11 +97,11 @@ const Businessdetails = () => {
   };
 
   const detailsType = [
-    { label: "Business Details", id: "businessdetails" },
+    { label: "Merchant Details", id: "Merchantdetails" },
     { label: "Documents", id: "Documents" },
   ];
 
-  const [showForm, setShowForm] = useState("businessdetails");
+  const [showForm, setShowForm] = useState("Merchantdetails");
 
   const changeDocType = (id) => {
     setShowForm(id);
@@ -153,7 +152,6 @@ const Businessdetails = () => {
   const uploadImage = (val) => {
     dispatch(showModal(<UploadImageModal value={val} />));
   };
-
   return (
     <Box className="main-wrapper">
       <Box>
@@ -187,7 +185,7 @@ const Businessdetails = () => {
                   ))}
                 </Tabs>
                 <Box sx={{ p: 2 }}>
-                  {showForm === "businessdetails" ? (
+                  {showForm === "Merchantdetails" ? (
                     <Box>
                       <form onSubmit={submitHandler}>
                         <Box>
@@ -557,4 +555,4 @@ const Businessdetails = () => {
   );
 };
 
-export default Businessdetails;
+export default Merchantdetails;

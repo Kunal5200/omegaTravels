@@ -101,6 +101,10 @@ const Merchant = () => {
     router.push("/add-merchant");
   };
 
+  const detailsPage = (id) => {
+    router.push(`/omegaMerchant/${id}/merchantdetails`);
+  };
+
   return (
     <Box className="main-wrapper">
       <div>
@@ -218,6 +222,7 @@ const Merchant = () => {
                                 fontSize={13}
                                 className={roboto_normal.className}
                                 textTransform={"capitalize"}
+                                onClick={() => detailsPage()}
                               >
                                 Three
                               </Typography>
