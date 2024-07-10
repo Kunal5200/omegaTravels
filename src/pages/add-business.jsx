@@ -194,7 +194,7 @@ const AddBusiness = () => {
     authControllers
       .addBusiness(body)
       .then((res) => {
-        console.log("response", res);
+        console.log("response", res.data.message);
       })
       .catch((err) => {
         console.log("error", err);

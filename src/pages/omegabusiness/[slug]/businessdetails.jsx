@@ -404,7 +404,7 @@ const Businessdetails = () => {
                             }}
                           >
                             <TableCell component="th" scope="row">
-                              <Checkbox /> yguhij
+                              <Checkbox /> A/c and Bookkeeping
                             </TableCell>
                           </TableRow>
                           <TableRow
@@ -413,7 +413,7 @@ const Businessdetails = () => {
                             }}
                           >
                             <TableCell component="th" scope="row">
-                              <Checkbox /> yguhij
+                              <Checkbox /> CB Alert
                             </TableCell>
                           </TableRow>
                           <TableRow
@@ -422,7 +422,7 @@ const Businessdetails = () => {
                             }}
                           >
                             <TableCell component="th" scope="row">
-                              <Checkbox /> yguhij
+                              <Checkbox /> CB Represements
                             </TableCell>
                           </TableRow>
                           <TableRow
@@ -431,7 +431,7 @@ const Businessdetails = () => {
                             }}
                           >
                             <TableCell component="th" scope="row">
-                              <Checkbox /> yguhij
+                              <Checkbox /> Customer Support
                             </TableCell>
                           </TableRow>
                         </TableBody>

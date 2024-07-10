@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Button,
   Grid,
@@ -41,60 +42,61 @@ const Merchantdetails = () => {
   const dispatch = useDispatch();
   const [businessData, setBusinessData] = useState(null);
   const [state, setState] = useState({
-    address: "",
+    bank_Information_same_as_business: "",
     bank_account_number: "",
     bank_name: "",
-    business_establish_date: "",
-    business_name: "",
-    city: "",
-    country: "",
-    owner_name: "",
-    routing_number: "",
-    ssn: "",
-    state: "",
-    tax_id_and_EIN_number: "",
-    zip: "",
-    status: "",
+    business_id: "",
+    contact_person: "",
+    currencies: "",
+    description_of_services: "",
+    merchant_id: "",
+    monthly_cap: "",
+    reserve_percentage: "",
+    retail_description: "",
+    support_email: "",
+    support_fax_number: "",
+    support_number: "",
+    website_DBA_name: "",
   });
 
-  useEffect(() => {
-    if (router.query.slug) {
-      fetchBusinessDetails(router.query.slug);
-    }
-  }, [router.query.slug]);
+  // useEffect(() => {
+  //   if (router.query.slug) {
+  //     fetchBusinessDetails(router.query.slug);
+  //   }
+  // }, [router.query.slug]);
 
-  useEffect(() => {
-    if (businessData) {
-      setState((prevState) => ({
-        ...prevState,
-        address: businessData.address || "",
-        bank_account_number: businessData.bank_account_number || "",
-        bank_name: businessData.bank_name || "",
-        business_establish_date: businessData.business_establish_date || "",
-        business_name: businessData.business_name || "",
-        city: businessData.city || "",
-        country: businessData.country || "",
-        owner_name: businessData.owner_name || "",
-        routing_number: businessData.routing_number || "",
-        ssn: businessData.ssn || "",
-        state: businessData.state || "",
-        tax_id_and_EIN_number: businessData.tax_id_and_EIN_number || "",
-        zip: businessData.zip || "",
-        status: businessData.status || "",
-      }));
-    }
-  }, [businessData]);
+  // useEffect(() => {
+  //   if (businessData) {
+  //     setState((prevState) => ({
+  //       ...prevState,
+  //       address: businessData.address || "",
+  //       bank_account_number: businessData.bank_account_number || "",
+  //       bank_name: businessData.bank_name || "",
+  //       business_establish_date: businessData.business_establish_date || "",
+  //       business_name: businessData.business_name || "",
+  //       city: businessData.city || "",
+  //       country: businessData.country || "",
+  //       owner_name: businessData.owner_name || "",
+  //       routing_number: businessData.routing_number || "",
+  //       ssn: businessData.ssn || "",
+  //       state: businessData.state || "",
+  //       tax_id_and_EIN_number: businessData.tax_id_and_EIN_number || "",
+  //       zip: businessData.zip || "",
+  //       status: businessData.status || "",
+  //     }));
+  //   }
+  // }, [businessData]);
 
-  const fetchBusinessDetails = (detailsID) => {
-    listingController
-      .getBusinessDetails(detailsID)
-      .then((res) => {
-        setBusinessData(res.data.data);
-      })
-      .catch((err) => {
-        console.log("error", err);
-      });
-  };
+  // const fetchBusinessDetails = (detailsID) => {
+  //   listingController
+  //     .getBusinessDetails(detailsID)
+  //     .then((res) => {
+  //       setBusinessData(res.data.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log("error", err);
+  //     });
+  // };
 
   const detailsType = [
     { label: "Merchant Details", id: "Merchantdetails" },
@@ -120,30 +122,25 @@ const Merchantdetails = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     let body = {
-      address: state.address,
+      bank_Information_same_as_business:
+        state.bank_Information_same_as_business,
       bank_account_number: state.bank_account_number,
       bank_name: state.bank_name,
-      business_establish_date: state.business_establish_date,
-      business_name: state.business_name,
-      city: state.city,
-      country: state.country,
-      owner_name: state.owner_name,
-      routing_number: state.routing_number,
-      ssn: state.ssn,
-      state: state.state,
-      tax_id_and_EIN_number: state.tax_id_and_EIN_number,
-      zip: state.zip,
-      status: state.status,
+      business_id: state.business_id,
+      contact_person: state.contact_person,
+      currencies: state.currencies,
+      description_of_services: state.description_of_services,
+      merchant_id: state.merchant_id,
+      monthly_cap: state.monthly_cap,
+      reserve_percentage: state.reserve_percentage,
+      retail_description: state.reserve_percentage,
+      support_email: state.support_email,
+      support_fax_number: state.support_fax_number,
+      support_number: state.support_number,
+      website_DBA_name: state.website_DBA_name,
     };
 
-    editcontroller
-      .updateBusiness(router.query.slug, body)
-      .then((res) => {
-        console.log("response", res);
-      })
-      .catch((err) => {
-        console.log("error", err);
-      });
+    console.log("body", body);
   };
 
   const addNotes = (val) => {
@@ -152,6 +149,37 @@ const Merchantdetails = () => {
   const uploadImage = (val) => {
     dispatch(showModal(<UploadImageModal value={val} />));
   };
+
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
+  };
+
+  const top100Films = [{ label: "maverick" }];
+
+  const [processorState, setProcessorState] = useState({
+    last_update: "",
+    password: "",
+    type: "processor",
+    username: "",
+  });
+
+  const processorInputHandler = (e, newValue) => {
+    const { id, value } = e.target;
+    setProcessorState({ ...processorState, [id]: value });
+  };
+
+  const processorDateHandler = (e) => {
+    const { value } = e.target;
+    setProcessorState({ ...processorState, last_update: value });
+  };
+
+  const processorSubmitHandler = (e) => {
+    e.preventDefault();
+    console.log("stateee", processorState);
+  };
+
   return (
     <Box className="main-wrapper">
       <Box>
@@ -199,16 +227,16 @@ const Merchantdetails = () => {
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="Owner's Name"
+                            label="Merchant id"
                             fullWidth
                             onChange={inputHandler}
-                            id="owner_name"
+                            id="Merchant_Id"
                             value={state.owner_name}
                           />
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="Tax ID / EIN Number"
+                            label="Mid Status"
                             fullWidth
                             onChange={inputHandler}
                             id="tax_id_and_EIN_number"
@@ -217,7 +245,7 @@ const Merchantdetails = () => {
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="SSN (optional)"
+                            label="Website/DBA Name"
                             fullWidth
                             onChange={inputHandler}
                             id="ssn"
@@ -226,7 +254,7 @@ const Merchantdetails = () => {
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="Bank Name (optional)"
+                            label="Contact Person"
                             fullWidth
                             onChange={inputHandler}
                             id="bank_name"
@@ -235,7 +263,7 @@ const Merchantdetails = () => {
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="Bank Account Number (optional)"
+                            label="Currencies"
                             fullWidth
                             onChange={inputHandler}
                             id="bank_account_number"
@@ -244,7 +272,7 @@ const Merchantdetails = () => {
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="Routing Number (optional)"
+                            label="Description of the Goods/Services"
                             fullWidth
                             onChange={inputHandler}
                             id="routing_number"
@@ -253,7 +281,7 @@ const Merchantdetails = () => {
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="Address"
+                            label="Retail Descriptor/s"
                             fullWidth
                             onChange={inputHandler}
                             id="address"
@@ -262,7 +290,7 @@ const Merchantdetails = () => {
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="City"
+                            label="Monthly Cap"
                             fullWidth
                             onChange={inputHandler}
                             id="city"
@@ -271,7 +299,8 @@ const Merchantdetails = () => {
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="State/Province"
+                            label="Bank Name (Optional)
+                            "
                             fullWidth
                             onChange={inputHandler}
                             id="state"
@@ -280,7 +309,7 @@ const Merchantdetails = () => {
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="Zip/Postal"
+                            label="Bank Account Number (optional)"
                             fullWidth
                             onChange={inputHandler}
                             id="zip"
@@ -289,7 +318,7 @@ const Merchantdetails = () => {
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="Country"
+                            label="Routing Number (Optional)"
                             fullWidth
                             onChange={inputHandler}
                             id="country"
@@ -298,7 +327,25 @@ const Merchantdetails = () => {
                         </Box>
                         <Box sx={{ mt: 2 }}>
                           <TextField
-                            label="Business Establish Date"
+                            label="Support Number"
+                            fullWidth
+                            onChange={inputHandler}
+                            id="business_establish_date"
+                            value={state.business_establish_date}
+                          />
+                        </Box>{" "}
+                        <Box sx={{ mt: 2 }}>
+                          <TextField
+                            label="Support Email"
+                            fullWidth
+                            onChange={inputHandler}
+                            id="business_establish_date"
+                            value={state.business_establish_date}
+                          />
+                        </Box>{" "}
+                        <Box sx={{ mt: 2 }}>
+                          <TextField
+                            label="Support Fax Number"
                             fullWidth
                             onChange={inputHandler}
                             id="business_establish_date"
@@ -372,19 +419,385 @@ const Merchantdetails = () => {
             <Grid item xs={6}>
               <Box>
                 <Box>
-                  <Tabs sx={{ borderBottom: "1px solid #d3d3d3" }}>
-                    <Tab
-                      label="Service details"
-                      sx={{
-                        color: "#859bee",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        border: "1px solid #859bee",
-                        borderRadius: "2px",
-                      }}
-                      onClick={() => showData()}
-                    />
-                  </Tabs>
+                  <div>
+                    <Tabs
+                      value={selectedTab}
+                      onChange={handleTabChange}
+                      sx={{ borderBottom: "1px solid #d3d3d3" }}
+                    >
+                      <Tab
+                        label="Processor Login"
+                        sx={{
+                          color: "#859bee",
+                          fontSize: "11px",
+                          fontWeight: 600,
+                          borderRadius: "2px",
+                        }}
+                      />
+                      <Tab
+                        label="GateWay Login"
+                        sx={{
+                          color: "#859bee",
+                          fontSize: "11px",
+                          fontWeight: 600,
+                          borderRadius: "2px",
+                        }}
+                      />
+                      <Tab
+                        label="Member Login"
+                        sx={{
+                          color: "#859bee",
+                          fontSize: "11px",
+                          fontWeight: 600,
+                          borderRadius: "2px",
+                        }}
+                      />
+                      <Tab
+                        label="CRM Login"
+                        sx={{
+                          color: "#859bee",
+                          fontSize: "11px",
+                          fontWeight: 600,
+                          borderRadius: "2px",
+                        }}
+                      />
+                      <Tab
+                        label="Service Detail"
+                        sx={{
+                          color: "#859bee",
+                          fontSize: "11px",
+                          fontWeight: 600,
+                          borderRadius: "2px",
+                        }}
+                      />
+                    </Tabs>
+
+                    <Box
+                      role="tabpanel"
+                      hidden={selectedTab !== 0}
+                      sx={{ p: 3 }}
+                    >
+                      <form onSubmit={processorSubmitHandler}>
+                        <Box>
+                          <Autocomplete
+                            disablePortal
+                            id="type"
+                            options={top100Films}
+                            fullWidth
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Please select Processor"
+                                onChange={processorInputHandler}
+                              />
+                            )}
+                          />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField
+                            fullWidth
+                            onChange={processorInputHandler}
+                            id="username"
+                            label="Username"
+                          />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField
+                            fullWidth
+                            onChange={processorInputHandler}
+                            id="password"
+                            type="password"
+                            label="Password"
+                          />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField
+                            type="date"
+                            fullWidth
+                            onChange={processorDateHandler}
+                            id="last_update"
+                            label="Last Update"
+                            InputLabelProps={{ shrink: true }}
+                          />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <Button
+                            type="submit"
+                            style={{
+                              backgroundColor: "#000",
+                              color: "#fff",
+                              width: "30%",
+                              padding: "13px",
+                            }}
+                          >
+                            Submit
+                          </Button>
+                        </Box>
+                      </form>
+                    </Box>
+                    <Box
+                      role="tabpanel"
+                      hidden={selectedTab !== 1}
+                      sx={{ p: 3 }}
+                    >
+                      <form>
+                        <Box>
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={top100Films}
+                            fullWidth
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Please Select Gateway"
+                              />
+                            )}
+                          />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField fullWidth />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField fullWidth />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField type="date" fullWidth />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <Button
+                            style={{
+                              backgroundColor: "#000",
+                              color: "#fff",
+                              width: "30%",
+                              padding: "13px",
+                            }}
+                          >
+                            Submit
+                          </Button>
+                        </Box>
+                      </form>
+                    </Box>
+                    <Box
+                      role="tabpanel"
+                      hidden={selectedTab !== 2}
+                      sx={{ p: 3 }}
+                    >
+                      <form>
+                        <Box>
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={top100Films}
+                            fullWidth
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Please select member"
+                              />
+                            )}
+                          />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField fullWidth />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField fullWidth />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField fullWidth />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <Button
+                            style={{
+                              backgroundColor: "#000",
+                              color: "#fff",
+                              width: "30%",
+                              padding: "13px",
+                            }}
+                          >
+                            Submit
+                          </Button>
+                        </Box>
+                      </form>
+                    </Box>
+                    <Box
+                      role="tabpanel"
+                      hidden={selectedTab !== 3}
+                      sx={{ p: 3 }}
+                    >
+                      <form>
+                        <Box>
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={top100Films}
+                            fullWidth
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Please select CRM"
+                              />
+                            )}
+                          />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField fullWidth />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField fullWidth />
+                        </Box>{" "}
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField fullWidth />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <TextField type="date" fullWidth />
+                        </Box>
+                        <Box
+                          sx={{
+                            mt: 2,
+                          }}
+                        >
+                          <Button
+                            style={{
+                              backgroundColor: "#000",
+                              color: "#fff",
+                              width: "30%",
+                              padding: "13px",
+                            }}
+                          >
+                            Submit
+                          </Button>
+                        </Box>
+                      </form>
+                    </Box>
+                    <Box
+                      role="tabpanel"
+                      hidden={selectedTab !== 4}
+                      sx={{ px: 3 }}
+                    >
+                      <TableContainer>
+                        <Table
+                          sx={{
+                            minWidth: 400,
+                            borderTop: "none",
+                          }}
+                          aria-label="simple table"
+                        >
+                          <TableBody>
+                            <TableRow
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                <Checkbox /> A/c and Bookkeeping
+                              </TableCell>
+                            </TableRow>
+                            <TableRow
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                <Checkbox /> CB Alert
+                              </TableCell>
+                            </TableRow>
+                            <TableRow
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                <Checkbox /> CB Represements
+                              </TableCell>
+                            </TableRow>
+                            <TableRow
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                <Checkbox /> Customer Support
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Box>
+                  </div>
                   {show && (
                     <TableContainer>
                       <Table

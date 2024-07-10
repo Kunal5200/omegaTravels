@@ -26,7 +26,7 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Roboto_Slab } from "next/font/google";
 import TabPanel from "@/components/tabpanel";
 import { Status } from "@/utils/enum";
@@ -43,6 +43,7 @@ import {
   VisibilityOutlined,
 } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import { authControllers } from "@/api/auth";
 const roboto = Roboto_Slab({
   weight: "500",
   subsets: ["latin"],
@@ -105,6 +106,23 @@ const Merchant = () => {
     router.push(`/omegaMerchant/${id}/merchantdetails`);
   };
 
+  const [merchantList, setMerchantList] = useState([]);
+  const fetchMerchantData = () => {
+    let body = { business_name: "", merchant_id: "" };
+    authControllers
+      .getMerchant(body)
+      .then((res) => {
+        console.log("merchant response", res.data.data.data);
+        setMerchantList(res.data.data.data);
+      })
+      .catch((err) => {
+        console.log("error merchant", err);
+      });
+  };
+
+  useEffect(() => {
+    fetchMerchantData();
+  });
   return (
     <Box className="main-wrapper">
       <div>
@@ -223,6 +241,9 @@ const Merchant = () => {
                                 className={roboto_normal.className}
                                 textTransform={"capitalize"}
                                 onClick={() => detailsPage()}
+                                sx={{
+                                  cursor: "pointer",
+                                }}
                               >
                                 Three
                               </Typography>

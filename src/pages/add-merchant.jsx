@@ -1,5 +1,4 @@
-import { listingController } from "@/api/listing";
-import { NavigateNext } from "@mui/icons-material";
+import React, { useState, useEffect } from "react";
 import {
   Autocomplete,
   Box,
@@ -8,10 +7,18 @@ import {
   Grid,
   TextField,
   Typography,
+  Snackbar,
+  Button,
 } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
+import { NavigateNext } from "@mui/icons-material";
 import { Roboto_Slab } from "next/font/google";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import Switch from "@mui/material/Switch";
+import { listingController } from "@/api/listing";
+import { authControllers } from "@/api/auth";
+import Countries from "@/components/countries";
+
 const roboto = Roboto_Slab({
   weight: "500",
   subsets: ["latin"],
@@ -19,6 +26,10 @@ const roboto = Roboto_Slab({
 const roboto_slab_normal = Roboto_Slab({
   weight: "400",
   subsets: ["latin"],
+});
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 const AddMerchant = () => {
@@ -48,18 +59,23 @@ const AddMerchant = () => {
     supportNumber: "",
     supportEmail: "",
     supportFax: "",
+    bank_Information_same_as_business: "",
   });
 
   const [getCurrency, setGetCurrency] = useState([]);
+  const [getBusinessName, setBusinessName] = useState([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const fetchCurrency = () => {
     listingController
       .getCurrency()
       .then((res) => {
         let options =
-          res.data && res.data && res.data.data
+          res.data && res.data.data
             ? res.data.data.map((val) => ({
-                value: val.currency_name,
+                value: val.currency_name.replace(/\s+/g, ""),
                 label: val.currency_name,
               }))
             : [];
@@ -69,8 +85,6 @@ const AddMerchant = () => {
         console.log("error", error);
       });
   };
-
-  const [getBusinessName, setBusinessName] = useState([]);
 
   const fetchBusinessName = () => {
     listingController
@@ -98,14 +112,63 @@ const AddMerchant = () => {
   const companyInputHandler = (e, newValue) => {
     setState({ ...state, businessName: newValue && newValue.label });
   };
+
+  const getCountriesOptions = Countries.map((country) => ({
+    label: country.country_name,
+    value: country.currency_code,
+  }));
+
   const currencyInputHandler = (e, newValue) => {
-    setState({ ...state, currency: newValue && newValue.label });
+    setState({ ...state, currency: newValue && newValue.value });
+  };
+
+  const switchHandler = (e) => {
+    setState({ ...state, bank_Information_same_as_business: e.target.value });
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log("state", state);
+    let body = {
+      MDR_discount_ratio: state.discount,
+      bank_Information_same_as_business:
+        state.bank_Information_same_as_business === "on" ? "true" : "false",
+      bank_account_number: state.bankNumber,
+      bank_name: state.bankName,
+      business_id: state.merchantId,
+      contact_person: state.contactPerson,
+      currencies: state.currency,
+      description_of_services: state.description,
+      merchant_id: state.merchantId,
+      monthly_cap: state.monthlyCap,
+      reserve_percentage: state.reservePercentage,
+      retail_description: state.retail,
+      support_email: state.supportEmail,
+      support_fax_number: state.supportFax,
+      support_number: state.supportNumber,
+      website_DBA_name: state.websiteName,
+    };
+
+    authControllers
+      .addMerchant(body)
+      .then((res) => {
+        setSnackbarMessage("Merchant added successfully!");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+      })
+      .catch((err) => {
+        setSnackbarMessage("Error adding merchant. Please try again.");
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+      });
   };
+
   useEffect(() => {
     fetchBusinessName();
     fetchCurrency();
@@ -128,7 +191,7 @@ const AddMerchant = () => {
           <Typography
             fontSize={12}
             className={roboto_slab_normal.className}
-            onClick={() => handleRoute("/merchants")}
+            onClick={() => handleRoute("/omegaMerchant/merchants")}
             sx={{ cursor: "pointer" }}
           >
             Merchants
@@ -184,6 +247,7 @@ const AddMerchant = () => {
                     }}
                     id="merchantId"
                     onChange={inputHandler}
+                    type="number"
                   />
                 </Box>
               </Grid>{" "}
@@ -253,7 +317,7 @@ const AddMerchant = () => {
                   <Autocomplete
                     disablePortal
                     id="currency"
-                    options={getCurrency}
+                    options={getCountriesOptions}
                     sx={{ width: 312, marginTop: "8px" }}
                     renderInput={(params) => (
                       <TextField {...params} label="Select Currency" />
@@ -308,6 +372,21 @@ const AddMerchant = () => {
               </Grid>
             </Grid>
           </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              mt: 2,
+            }}
+          >
+            <Switch
+              onClick={switchHandler}
+              id="bank_Information_same_as_business"
+            />
+            <Typography variant="h6" fontSize={"15px"}>
+              Bank Information Same as Business
+            </Typography>
+          </Box>
           {/* second form start */}
           <Box
             sx={{
@@ -355,6 +434,7 @@ const AddMerchant = () => {
                       mt: 1,
                     }}
                     id="bankNumber"
+                    type="number"
                     onChange={inputHandler}
                   />
                 </Box>
@@ -371,6 +451,7 @@ const AddMerchant = () => {
                     Monthly Cap
                   </FormLabel>
                   <TextField
+                    type="number"
                     fullWidth
                     label="Monthly Cap"
                     sx={{
@@ -425,6 +506,7 @@ const AddMerchant = () => {
                   </FormLabel>
                   <TextField
                     fullWidth
+                    type="number"
                     label="MDR Discount Ratio"
                     sx={{
                       mt: 1,
@@ -525,6 +607,20 @@ const AddMerchant = () => {
             </button>
           </Box>
         </form>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={snackbarSeverity}
+            sx={{ width: "100%" }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     </Box>
   );
