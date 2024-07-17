@@ -1,3 +1,4 @@
+import { UserSettingControllers } from "@/api/usersetting";
 import AddModules from "@/assesst/modal/addModules";
 import { showModal } from "@/redux/reducers/modal";
 import { Add } from "@mui/icons-material";
@@ -12,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Roboto_Slab } from "next/font/google";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const tableHeader = [
@@ -44,6 +45,22 @@ const Modules = () => {
   const addModules = () => {
     dispatch(showModal(<AddModules />));
   };
+  // const [subModule, setSubModule] = useState([]);
+  // const [isSubSubModule, setIsSubSubModule] = useState([]);
+  useEffect(() => {
+    UserSettingControllers.getModules()
+      .then((res) => {
+        console.log(res);
+        const module = res.data.data.data;
+        console.log("module", module);
+        const subModule = module
+          .map((i) => (i._id !== undefined ? "" : i))
+          .filter((item) => console.log("item", item));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   return (
     <div>
       <Stack

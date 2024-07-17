@@ -34,7 +34,7 @@ const Header = () => {
   const user = useSelector((state) => state.UserDetails);
   const handleRoute = (path) => {
     router.push(path);
-    setAnchorEl(null)
+    setAnchorEl(null);
   };
   const dispatch = useDispatch();
   useEffect(() => {

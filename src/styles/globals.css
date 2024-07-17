@@ -12,3 +12,13 @@ body {
 .m-auto {
   margin: auto;
 }
+
+.textArea {
+  border: 1px solid #d7d7d7;
+  resize: none;
+  font-size: 12;
+  padding: 8px;
+}
+.textArea::placeholder {
+  font-size: 12px;
+}

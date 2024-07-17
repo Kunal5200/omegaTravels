@@ -62,8 +62,8 @@ const AddModules = () => {
   const [value, setValue] = useState(null);
   const [subModuleData, setSubModuleData] = useState([]);
   const [subModuleValue, setSubModuleValue] = useState(null);
-  const [sub_sub_module_nameValue, setsub_sub_module_nameValue] =
-    useState(null);
+
+  // const [subSubModuleData, setSubSubModuleData] = useState([]);
   const [state, setState] = useState({
     module_name: "",
     sub_module_name: "",
@@ -91,6 +91,7 @@ const AddModules = () => {
       setState({ ...state, name: newValue.inputValue });
     } else if (newValue && newValue._id) {
       setValue(newValue);
+
       setSubModuleLoading(true);
       setState({ ...state, module_name: newValue._id });
       UserSettingControllers.getSubmodules(newValue._id)
@@ -114,6 +115,7 @@ const AddModules = () => {
   };
 
   const subModuleHandler = (e, newValue) => {
+    console.log(newValue);
     if (typeof newValue === "string") {
       setSubModuleValue({ sub_module_name: newValue });
 
@@ -147,6 +149,9 @@ const AddModules = () => {
 
   const slugHandler = (e) => {
     setState({ ...state, slug: e.target.value });
+  };
+  const subSubModuleNameHandler = (e) => {
+    setState({ ...state, name: e.target.value });
   };
   const [selectedStatus, setSelectedStatus] = useState(null);
   const statusHandler = (e, newValue) => {
@@ -354,61 +359,22 @@ const AddModules = () => {
                 )}
               />
             )}
-            {/* {isExistingSubModuleOption && (
-              <Autocomplete
-                value={subModuleValue}
-                size="medium"
-                onChange={subModuleHandler}
-                loading={subModuleLoading}
-                filterOptions={(options, params) => {
-                  const filtered = filter(options, params);
-                  const { inputValue } = params;
-                  const isExisting = options.some(
-                    (option) => inputValue === option.name
-                  );
-                  if (inputValue !== "" && !isExisting) {
-                    filtered.push({
-                      inputValue,
-                      name: inputValue,
-                      name: `Add "${inputValue}"`,
-                    });
-                  }
-                  return filtered;
+            {isExistingSubModuleOption && (
+              <TextField
+                label="Sub Sub Module Name"
+                // id="slug"
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-input": {
+                    padding: "12px",
+                  },
+                  "& label": {
+                    fontSize: 12,
+                  },
                 }}
-                selectOnFocus
-                clearOnBlur
-                handleHomeEndKeys
-                id="free-solo-sub-module"
-                options={subModuleData}
-                getOptionLabel={(option) => {
-                  if (typeof option === "string") {
-                    return option;
-                  }
-                  if (option.inputValue) {
-                    return option.name;
-                  }
-                  return option.name;
-                }}
-                renderOption={(props, option) => (
-                  <li {...props}>{option.name}</li>
-                )}
-                freeSolo
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Sub Module Name"
-                    sx={{
-                      "& .MuiOutlinedInput-input": {
-                        padding: "12px",
-                      },
-                      "& label": {
-                        fontSize: 13,
-                      },
-                    }}
-                  />
-                )}
+                onChange={subSubModuleNameHandler}
               />
-            )} */}
+            )}
             <TextField
               label="Slug"
               id="slug"

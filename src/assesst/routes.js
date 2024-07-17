@@ -50,8 +50,8 @@ export const routes = [
     icon: <Person2Outlined fontSize="small" />,
   },
   {
-    name: "Settings",
-    url: "/setting",
+    name: "CGMP Management",
+    url: "/cgmp",
     icon: <SettingsOutlined fontSize="small" />,
   },
 ];
