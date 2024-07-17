@@ -125,6 +125,10 @@ const business = () => {
     businessData();
   }, []);
 
+  const businessdetails = (id) => {
+    router.push(`/omegabusiness/${id}/businessdetails`);
+  };
+
   return (
     <Box className="main-wrapper">
       {loading ? (
@@ -245,6 +249,10 @@ const business = () => {
                                       alignItems={"center"}
                                       spacing={1}
                                       justifyContent={"start"}
+                                      sx={{
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() => businessdetails(val._id)}
                                     >
                                       {val.business_name}
                                     </Stack>
@@ -305,11 +313,11 @@ const business = () => {
                                       {val.status}
                                     </Button>
                                   </TableCell>
-                                  <TableCell>
+                                  {/* <TableCell>
                                     <IconButton>
                                       <MoreVertIcon />
                                     </IconButton>
-                                  </TableCell>
+                                  </TableCell> */}
                                 </TableRow>
                               </TableBody>
                             );

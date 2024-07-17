@@ -55,7 +55,7 @@ const AddBusiness = () => {
     setState({ ...state, state: newValue ? newValue.label : null });
   };
   const statusSelectHandler = (e, newValue) => {
-    setState({ ...state, status: newValue.label });
+    setState({ ...state, status: newValue ? newValue.label : null });
   };
   const businessStatus = [
     { label: "Active" },
@@ -194,7 +194,7 @@ const AddBusiness = () => {
     authControllers
       .addBusiness(body)
       .then((res) => {
-        console.log("response", res);
+        console.log("response", res.data.message);
       })
       .catch((err) => {
         console.log("error", err);
@@ -218,7 +218,7 @@ const AddBusiness = () => {
           <Typography
             fontSize={12}
             className={roboto_slab_normal.className}
-            onClick={() => handleRoute("/business")}
+            onClick={() => handleRoute("/omegabusiness/business")}
             sx={{ cursor: "pointer" }}
           >
             Business
@@ -241,6 +241,9 @@ const AddBusiness = () => {
                     onChange={inputHandler}
                     sx={{
                       mt: 1,
+                      "& input": {
+                        fontSize: "16px",
+                      },
                     }}
                   />
                 </Box>
@@ -254,6 +257,9 @@ const AddBusiness = () => {
                     onChange={inputHandler}
                     sx={{
                       mt: 1,
+                      "& input": {
+                        fontSize: "16px",
+                      },
                     }}
                   />
                 </Box>
@@ -267,6 +273,9 @@ const AddBusiness = () => {
                     onChange={inputHandler}
                     sx={{
                       mt: 1,
+                      "& input": {
+                        fontSize: "16px",
+                      },
                     }}
                   />
                 </Box>
@@ -281,6 +290,9 @@ const AddBusiness = () => {
                     onChange={inputHandler}
                     sx={{
                       mt: 1,
+                      "& input": {
+                        fontSize: "16px",
+                      },
                     }}
                   />
                 </Box>
@@ -302,6 +314,9 @@ const AddBusiness = () => {
                     onChange={inputHandler}
                     sx={{
                       mt: 1,
+                      "& input": {
+                        fontSize: "16px",
+                      },
                     }}
                   />
                 </Box>
@@ -316,6 +331,9 @@ const AddBusiness = () => {
                     onChange={inputHandler}
                     sx={{
                       mt: 1,
+                      "& input": {
+                        fontSize: "16px",
+                      },
                     }}
                   />
                 </Box>
@@ -329,6 +347,9 @@ const AddBusiness = () => {
                     onChange={inputHandler}
                     sx={{
                       mt: 1,
+                      "& input": {
+                        fontSize: "16px",
+                      },
                     }}
                   />
                 </Box>
@@ -342,6 +363,9 @@ const AddBusiness = () => {
                     onChange={inputHandler}
                     sx={{
                       mt: 1,
+                      "& input": {
+                        fontSize: "16px",
+                      },
                     }}
                   />
                 </Box>
@@ -416,6 +440,9 @@ const AddBusiness = () => {
                     onChange={inputHandler}
                     sx={{
                       mt: 1,
+                      "& input": {
+                        fontSize: "16px",
+                      },
                     }}
                   />
                 </Box>
@@ -437,6 +464,9 @@ const AddBusiness = () => {
                     onChange={inputHandler}
                     sx={{
                       mt: 1,
+                      "& input": {
+                        fontSize: "16px",
+                      },
                     }}
                   />
                 </Box>

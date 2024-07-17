@@ -12,3 +12,34 @@ body {
 .m-auto {
   margin: auto;
 }
+
+.textArea {
+  border: 1px solid #d7d7d7;
+  resize: none;
+  font-size: 12;
+  padding: 8px;
+}
+.textArea::placeholder {
+  font-size: 12px;
+}
+
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+  font-size: 14px;
+  letter-spacing: inherit;
+  color: currentColor;
+  padding: 4px 0 5px;
+  border: 0;
+  box-sizing: content-box;
+  background: none;
+  height: 1rem;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+  display: block;
+  min-width: 0;
+  width: 100%;
+  -webkit-animation-name: mui-auto-fill-cancel;
+  animation-name: mui-auto-fill-cancel;
+  -webkit-animation-duration: 10ms;
+  animation-duration: 10ms;
+  padding: 18px 10px;
+}

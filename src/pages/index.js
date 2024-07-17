@@ -80,7 +80,6 @@ export default function Home() {
       authControllers
         .loginUser(body)
         .then((res) => {
-          // console.log(res);
           const decoded = jwtDecode(res.data.data.accessToken);
           dispatch(loginDetails({ ...decoded }));
 
@@ -101,9 +100,9 @@ export default function Home() {
           setLoading(false);
         });
       // axios
-      //   .post("https://e5ebcbf9cf4b0e486c5bdca0ea624e40.serveo.net/login", body)
-      //   .then((Res) => {
-      //     console.log("first", Res);
+      //   .post("https://9f3d67d479f3f447da2468967e763089.serveo.net/login", body)
+      //   .then((res) => {
+      //     console.log("first", res);
       //     setLoading(false);
       //   })
       //   .catch((err) => {
