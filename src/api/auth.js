@@ -89,10 +89,41 @@ export const authControllers = {
       throw error;
     }
   },
+  getMerchant: async ({ business_name, merchant_id }) => {
+    try {
+      // Build the query object
+      const query = {};
+      if (business_name !== undefined) {
+        query.business_name = business_name;
+      }
+      if (merchant_id !== undefined) {
+        query.merchant_id = merchant_id;
+      }
+
+      // Create the URL
+      // const pageNo = page === 0 ? 1 : page;
+      const url = `/merchant?limit=10&pageNo=1=${encodeURIComponent(
+        JSON.stringify(query)
+      )}`;
+
+      let result = await securedApi.securedApi.get(url);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
 
   getMerchants: async () => {
     try {
       let result = await securedApi.securedApi.get("merchant/get-merchants");
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  addMerchant: async (body) => {
+    try {
+      let result = await securedApi.securedApi.post("/merchant", body);
       return result;
     } catch (error) {
       throw error;
@@ -174,6 +205,17 @@ export const authControllers = {
     try {
       let result = await securedApi.securedApi.delete(
         `/user-management?_id=${id}`
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+  addnotes: async (body, id) => {
+    try {
+      let result = await securedApi.securedApi.put(
+        `/business/note/${id}`,
+        body
       );
       return result;
     } catch (error) {

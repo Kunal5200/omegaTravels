@@ -35,12 +35,12 @@ export const routes = [
   },
   {
     name: "Business",
-    url: "/business",
+    url: "/omegabusiness/business",
     icon: <BusinessOutlined fontSize="small" />,
   },
   {
     name: "Merchants",
-    url: "/merchants",
+    url: "/omegaMerchant/merchants",
     icon: <StorefrontOutlined fontSize="small" />,
   },
 
