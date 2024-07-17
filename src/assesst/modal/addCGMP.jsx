@@ -4,6 +4,7 @@ import { Camera, CloudUpload } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
+  Button,
   Divider,
   FormControl,
   Grid,
@@ -40,31 +41,42 @@ const status = [
 ];
 const AddCGMP = () => {
   return (
-    <div style={{ minWidth: 500 }}>
+    <div style={{ minWidth: 400 }}>
       <Typography fontFamily={roboto_600.style} fontSize={20}>
         Add Setting
       </Typography>
       <Divider sx={{ borderStyle: "dashed", borderColor: "#000" }} />
 
       <FormControl fullWidth sx={{ mt: 2 }}>
-        <Grid container spacing={3} >
-          <Grid item lg={4}>
+        <Grid container spacing={3}>
+          {/* <Grid item lg={4}>
             <IconButton
-              sx={{ width: "100%", height: 140, border: "1px dashed #000" }}
+              sx={{ width: "100%", height: 180, border: "1px dashed #000" }}
             >
-              <Camera sx={{ fontSize: 25 }} />
+              <Camera sx={{ fontSize: 30 }} />
             </IconButton>
-          </Grid>
-          <Grid item lg={8}>
+          </Grid> */}
+          <Grid item lg={12}>
             <Stack spacing={2}>
+              <IconButton
+                sx={{
+                  width: 200,
+                  height: 180,
+                  border: "1px dashed #000",
+                  margin: "auto",
+                }}
+              >
+                <Camera sx={{ fontSize: 30 }} />
+              </IconButton>
               <TextField
                 fullWidth
                 sx={{
                   "& .MuiOutlinedInput-input": {
-                    padding: "10px",
+                    padding: "15px",
                   },
                   "& label": {
                     fontSize: 12,
+                    // top:-5
                   },
                 }}
                 label="Setting Name"
@@ -76,7 +88,7 @@ const AddCGMP = () => {
                     label="Type"
                     sx={{
                       "& .MuiOutlinedInput-input": {
-                        padding: "12px",
+                        padding: "15px",
                         fontSize: 12,
                       },
                       "& label": {
@@ -87,7 +99,7 @@ const AddCGMP = () => {
                 )}
                 sx={{
                   "& .MuiOutlinedInput-root": {
-                    padding: "5px",
+                    padding: "8px",
                   },
                 }}
                 options={CGMPTYPE}
@@ -104,7 +116,7 @@ const AddCGMP = () => {
                     label="Status"
                     sx={{
                       "& .MuiOutlinedInput-input": {
-                        padding: "12px",
+                        padding: "15px",
                         fontSize: 12,
                       },
                       "& label": {
@@ -115,7 +127,7 @@ const AddCGMP = () => {
                 )}
                 sx={{
                   "& .MuiOutlinedInput-root": {
-                    padding: "5px",
+                    padding: "8px",
                   },
                 }}
                 options={status}
@@ -130,7 +142,7 @@ const AddCGMP = () => {
                 sx={{
                   "& .MuiOutlinedInput-input": {
                     // fontSize: 12,
-                    padding: "10px",
+                    padding: "15px",
                   },
                   "& label": {
                     fontSize: 12,
@@ -142,6 +154,20 @@ const AddCGMP = () => {
                 minRows={4}
                 placeholder="Description"
               />
+
+              <Button
+                sx={{
+                  border: "1px solid #000",
+                  backgroundColor: "#000",
+                  color: "#fff",
+                  ":hover": {
+                    backgroundColor: "#000",
+                    color: "#fff",
+                  },
+                }}
+              >
+                Submit
+              </Button>
             </Stack>
           </Grid>
         </Grid>
